@@ -1,9 +1,11 @@
-#include <iostream>
-#include <vector>
-#include <queue>
 #include <algorithm>
+#include <cstdlib>
 #include <ctime>
+#include <iosfwd>
+#include <iostream>
 #include <limits>
+#include <queue>
+#include <vector>
 
 using namespace std;
 
@@ -80,12 +82,11 @@ struct table
 {
 	card player_card;
 	card computer_card;
-	int player_cards;
-	int computer_cards;
-	int round;
+	size_t player_cards;
+	size_t computer_cards;
+	int round{};
 	queue<card> player_queue;
 	queue<card> computer_queue;
-
 };
 
 bool compare_cards(queue<card>& player_queue, queue<card>& computer_queue, queue<card>& war_queue, int& player_score, int& computer_score);
