@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <ctime>
 #include <limits>
+
 using namespace std;
 
 class card {
@@ -91,7 +92,7 @@ bool compare_cards(queue<card>& player_queue, queue<card>& computer_queue, queue
 
 void war(queue<card>& player_queue, queue<card>& computer_queue, queue<card>& war_queue, int& player_score, int& computer_score);
 
-void get_table_state(table& table, const queue<card>& player_queue, const queue<card>& computer_queue,int round);
+void get_table_state(table& table, const queue<card>& player_queue, const queue<card>& computer_queue, int round);
 
 void display_table(const table& table);
 
@@ -120,12 +121,13 @@ int main() {
 		if (!compare_cards(player_queue, computer_queue, war_queue, player_score, computer_score))
 			break;
 		cout << "---------------------------------------" << '\n';
-
 		round++;
 		cout << "Nacisnij Enter aby kontynuowac..." << '\n';
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		system("cls");
+		cout << '\n';
 	}
+
+	cout << '\n' << '\n';
 
 	if (player_score > computer_score) {
 		cout << "Gracz wygrywa gre!";
@@ -133,6 +135,8 @@ int main() {
 	else if (player_score < computer_score) {
 		cout << "Komputer wygrywa gre!";
 	}
+	cout << "Karty gracza: "<< player_queue.size();
+	cout << "Karty komputera: " << computer_queue.size();
 
 	return 0;
 }
@@ -141,7 +145,7 @@ void display_table(const table& table)
 {
 	cout << "Gracz ilosc kart - " << table.player_cards << '\n';
 	cout << "Komputer ilosc kart - " << table.computer_cards << '\n';
-	cout<<"Runda: "<<table.round<<'\n';
+	cout << "Runda: " << table.round << '\n';
 	cout << "Gracz rzuca ";
 	table.player_card.display();
 	cout << ". Komputer rzuca ";
@@ -149,7 +153,6 @@ void display_table(const table& table)
 	cout << "." << '\n';
 	cout << "---------------------------------------" << '\n';
 }
-
 
 void get_table_state(table& table, const queue<card>& player_queue, const queue<card>& computer_queue, const int round)
 {
@@ -207,6 +210,11 @@ void war(queue<card>& player_queue, queue<card>& computer_queue, queue<card>& wa
 	war_queue.push(computer_queue.front());
 	player_queue.pop();
 	computer_queue.pop();
+	if (player_queue.empty() || computer_queue.empty())
+	{
+		cout << "Koniec rozgrywki";
+		return;
+	}
 	cout << "gracz wyrzucil - ";
 	player_queue.front().display();
 	cout << '\n';
