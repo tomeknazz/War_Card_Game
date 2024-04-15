@@ -89,6 +89,8 @@ struct table
 	queue<card> computer_queue;
 };
 
+void start_screen();
+
 bool compare_cards(queue<card>& player_queue, queue<card>& computer_queue, queue<card>& war_queue, int& player_score, int& computer_score);
 
 void war(queue<card>& player_queue, queue<card>& computer_queue, queue<card>& war_queue, int& player_score, int& computer_score);
@@ -98,6 +100,17 @@ void get_table_state(table& table, const queue<card>& player_queue, const queue<
 void display_table(const table& table);
 
 int main() {
+	start_screen();
+	char choice;
+	cin.get(choice);
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	if (choice != '1')
+	{
+		return 0;
+	}
+	system("cls");
+
+
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	deck deck;
@@ -124,22 +137,35 @@ int main() {
 		cout << "---------------------------------------" << '\n';
 		round++;
 		cout << "Nacisnij Enter aby kontynuowac..." << '\n';
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cout << '\n';
+		//cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 
 	cout << '\n' << '\n';
-
 	if (player_score > computer_score) {
-		cout << "Gracz wygrywa gre!";
+		cout << "Gracz wygrywa gre!" << '\n';
 	}
 	else if (player_score < computer_score) {
-		cout << "Komputer wygrywa gre!";
+		cout << "Komputer wygrywa gre!" << '\n';
 	}
-	cout << "Karty gracza: "<< player_queue.size();
-	cout << "Karty komputera: " << computer_queue.size();
+	cout << "Karty gracza: " << player_queue.size() << '\n';
+	cout << "Karty komputera: " << computer_queue.size() << '\n';
 
 	return 0;
+}
+
+void start_screen()
+{
+	cout << "_    _            _____               _ _____" << '\n';
+	cout << "| |  | |          /  __ \\             | |  __ \\" << '\n';
+	cout << "| |  | | __ _ _ __| /  \\ / __ _ _ __ __| | |  \\ / __ _ _ __ ___   ___" << '\n';
+	cout << "| |/\\| |/ _` | '__| |    / _` | '__/ _` | | __ / _` | '_ ` _ \\ / _ \\" << '\n';
+	cout << "\\ / \\ / (_| | |  | \\__ / \\ (_| | | | (_| | |\\ \\ (_| | | | | | |  __/" << '\n';
+	cout << " \\_/\\_/\\__,_|_|  |_|\\____/\\__,_|_|  \\__,_|_| \\_\\__,_|_| |_| |_|\\___|" << '\n';
+	cout << "Tomasz Nazar 197613           Lukasz Orluk 197641" << '\n';
+	cout << "Wybierz jedna z opcji: " << '\n';
+	cout << "1. Zacznij gre" << '\n';
+	cout << "2. Wyjdz z gry" << '\n';
 }
 
 void display_table(const table& table)
@@ -171,7 +197,6 @@ bool compare_cards(queue<card>& player_queue, queue<card>& computer_queue, queue
 	if (player_queue.empty() || computer_queue.empty()) {
 		return false;
 	}
-
 	if (player_queue.front().get_value() > computer_queue.front().get_value()) {
 		cout << "Gracz wygrywa te runde!" << '\n';
 		++player_score;
@@ -179,7 +204,6 @@ bool compare_cards(queue<card>& player_queue, queue<card>& computer_queue, queue
 		player_queue.push(player_queue.front());
 		player_queue.pop();
 		computer_queue.pop();
-
 	}
 	else if (player_queue.front().get_value() < computer_queue.front().get_value()) {
 		cout << "Komputer wygrywa te runde!" << '\n';
@@ -188,18 +212,31 @@ bool compare_cards(queue<card>& player_queue, queue<card>& computer_queue, queue
 		computer_queue.push(player_queue.front());
 		player_queue.pop();
 		computer_queue.pop();
-
-
 	}
 	else {
 		if (player_queue.front().get_value() == computer_queue.front().get_value()) {
-			cout << " REMIS ------- WOJNA!" << '\n';
+			cout << "REMIS ------- WOJNA!" << '\n' << '\n';
 			war_queue.push(player_queue.front());
 			war_queue.push(computer_queue.front());
 			player_queue.pop();
 			computer_queue.pop();
 			war(player_queue, computer_queue, war_queue, player_score, computer_score);
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	}
+	if (player_score > computer_score)
+	{
+		while (!war_queue.empty())
+		{
+			player_queue.push(war_queue.front());
+			war_queue.pop();
+		}
+	}
+	else
+	{
+		while (!war_queue.empty())
+		{
+			computer_queue.push(war_queue.front());
+			war_queue.pop();
 		}
 	}
 	return true;
@@ -207,56 +244,57 @@ bool compare_cards(queue<card>& player_queue, queue<card>& computer_queue, queue
 
 void war(queue<card>& player_queue, queue<card>& computer_queue, queue<card>& war_queue, int& player_score, int& computer_score)
 {
+	if (player_queue.empty() || computer_queue.empty()) return;
+	
 	war_queue.push(player_queue.front());
 	war_queue.push(computer_queue.front());
 	player_queue.pop();
 	computer_queue.pop();
-	if (player_queue.empty() || computer_queue.empty())
+	if (player_queue.empty())
 	{
-		cout << "Koniec rozgrywki";
+		cout << "Gracz nie ma wiecej kart!" << '\n';
 		return;
 	}
-	cout << "gracz wyrzucil - ";
+	if (computer_queue.empty())
+	{
+		cout << "Komputer nie ma wiecej kart!" << '\n';
+		return;
+	}
+	cout << "Gracz wyrzucil - ";
 	player_queue.front().display();
 	cout << '\n';
-	cout << "komputer  wyrzucil - ";
+	cout << "Komputer  wyrzucil - ";
 	computer_queue.front().display();
 	cout << '\n';
 	if (player_queue.front().get_value() > computer_queue.front().get_value()) {
-		cout << "Gracz wygrywa Wojne!" << '\n';
+		cout << '\n' << "Gracz wygrywa Wojne!" << '\n';
 		++player_score;
-		computer_queue.pop();
-		player_queue.pop();
 		war_queue.push(player_queue.front());
 		war_queue.push(computer_queue.front());
-		if (!war_queue.empty())
+		computer_queue.pop();
+		player_queue.pop();
+		while (!war_queue.empty())
 		{
-			while (!war_queue.empty())
-			{
-				player_queue.push(war_queue.front());
-				war_queue.pop();
-			}
+			player_queue.push(war_queue.front());
+			war_queue.pop();
 		}
 	}
 	else if (player_queue.front().get_value() < computer_queue.front().get_value()) {
-		cout << "Komputer wygrywa Wojne!" << '\n';
+		cout << '\n' << "Komputer wygrywa Wojne!" << '\n';
 		++computer_score;
-		player_queue.pop();
-		computer_queue.pop();
 		war_queue.push(player_queue.front());
 		war_queue.push(computer_queue.front());
-		if (!war_queue.empty())
+		player_queue.pop();
+		computer_queue.pop();
+		while (!war_queue.empty())
 		{
-			while (!war_queue.empty())
-			{
-				computer_queue.push(war_queue.front());
-				war_queue.pop();
-			}
+			computer_queue.push(war_queue.front());
+			war_queue.pop();
 		}
 	}
 	else {
 		if (player_queue.front().get_value() == computer_queue.front().get_value()) {
-			cout << " REMIS wojna trwa dalej!" << '\n';
+			cout << " REMIS wojna trwa dalej!" << '\n' << '\n';
 			war_queue.push(player_queue.front());
 			war_queue.push(computer_queue.front());
 			player_queue.pop();
