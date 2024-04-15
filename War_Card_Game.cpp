@@ -110,9 +110,7 @@ int main() {
 	}
 	system("cls");
 
-
 	srand(static_cast<unsigned int>(time(nullptr)));
-
 	deck deck;
 	int player_score = 0;
 	int computer_score = 0;
@@ -121,13 +119,11 @@ int main() {
 	queue<card> war_queue;
 	queue<card> player_queue;
 	queue<card> computer_queue;
-
 	for (int i = 0; i < 26; i++)
 	{
 		player_queue.push(deck.deal_card());
 		computer_queue.push(deck.deal_card());
 	}
-
 	while (!player_queue.empty() && !computer_queue.empty())
 	{
 		get_table_state(table, player_queue, computer_queue, round);
@@ -138,9 +134,8 @@ int main() {
 		round++;
 		cout << "Nacisnij Enter aby kontynuowac..." << '\n';
 		cout << '\n';
-		//cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
-
 	cout << '\n' << '\n';
 	if (player_score > computer_score) {
 		cout << "Gracz wygrywa gre!" << '\n';
